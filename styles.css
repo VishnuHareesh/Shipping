@@ -1,0 +1,169 @@
+/* All static values come from Figma node 9:154 (frame 1408 × 890). The file defines no Figma variables. */
+:root {
+  --color-bg: #fdfdfd;
+  --color-ink: #101010;
+  --color-ghost: #e7e7e7;
+  --color-accent: #ec1d23;
+  --color-nav: #1b2026;
+
+  --font-display: "Anton", sans-serif;
+  --font-ui: "Inter", sans-serif;
+
+  /* Everything is anchored to the top so the header, text and truck never leave the viewport.
+     The ground fills the rest; at Figma's 890px height it is exactly 360px tall. */
+  --ground-top: 530px;
+
+  /* Marquee (Figma 9:155 / 12:2 / 12:8) */
+  --marquee-size: 260px;
+  --marquee-group-width: 4987px;
+  --marquee-period: 5023px;        /* distance between consecutive groups = loop translate */
+  --marquee-start: 90px;           /* left edge of the "current" group in the frame */
+  --marquee-top: 254.5px;          /* line box bottom sits 15.5px above the ground */
+
+  /* Truck (Figma 9:162) */
+  --truck-left: 227.5px;
+  --truck-top: 349px;              /* wheels touch the ground's top edge */
+
+  /* Marquee timeline from Figma: 24s, linear, infinite */
+  --loop: 24s;
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* Fixed viewport: the page never scrolls; scroll input only drives the truck (script.js) */
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.hero {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* ---------- Navigation (Figma 9:163) ---------- */
+.nav {
+  position: absolute;
+  z-index: 3;
+  top: 32px;
+  left: 65px;
+  right: 33px;
+  height: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav__logo,
+.nav__logo img,
+.nav__menu img { display: block; }
+
+.nav__links {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+
+.nav__links a {
+  font: 500 11px/normal var(--font-ui);
+  color: var(--color-nav);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.nav__menu {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+/* ---------- Background marquee ---------- */
+.marquee {
+  position: absolute;
+  z-index: 0;
+  left: 0;
+  right: 0;
+  top: var(--marquee-top);
+  height: var(--marquee-size);
+}
+
+.marquee__track {
+  position: absolute;
+  top: 0;
+  /* Begin one period to the left so the preceding group's tail ("…S") shows at the left edge, as in Figma */
+  left: calc(var(--marquee-start) - var(--marquee-period));
+  height: 100%;
+  display: flex;
+  gap: calc(var(--marquee-period) - var(--marquee-group-width));
+  will-change: transform;
+  animation: marquee var(--loop) linear infinite;
+}
+
+.marquee__group {
+  position: relative;
+  flex: none;
+  width: var(--marquee-group-width);
+  height: 100%;
+}
+
+.w {
+  position: absolute;
+  top: 0;
+  font: 400 var(--marquee-size)/1 var(--font-display);
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--color-ghost);
+}
+
+.w--services  { left: 0; }
+.w--cargo     { left: 1398px; color: var(--color-accent); }
+.w--shipping  { left: 2105px; color: var(--color-ink); }
+.w--delivery  { left: 3055px; }
+.w--logistics { left: 4002px; }
+
+.w__accent { color: var(--color-accent); }
+
+/* ---------- Ground (Figma 9:161) ---------- */
+.ground {
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: var(--ground-top);
+  background: var(--color-ink);
+}
+
+/* ---------- Truck ---------- */
+.truck {
+  position: absolute;
+  z-index: 2;
+  left: var(--truck-left);
+  top: var(--truck-top);
+  width: 633px;
+  height: 211px;
+  will-change: transform;
+  /* translateX is driven by scroll position in script.js */
+}
+
+/* ---------- Motion (from Figma get_motion_context) ---------- */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(calc(-1 * var(--marquee-period))); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee__track { animation: none; }
+}
