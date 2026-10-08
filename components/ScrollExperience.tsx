@@ -25,6 +25,7 @@ export default function ScrollExperience() {
 
   // Frame 2 refs
   const topTruckRef = useRef<HTMLDivElement>(null);
+  const topWheelsRef = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     // Check prefers-reduced-motion
@@ -60,14 +61,16 @@ export default function ScrollExperience() {
     const topExitLeft = -(topTruckW + 120);
 
     // Filter valid wheel elements
-    const wheelElements = sideWheelsRef.current.filter(Boolean);
+    const sideWheelElements = sideWheelsRef.current.filter(Boolean);
+    const topWheelElements = topWheelsRef.current.filter(Boolean);
 
     // Set initial layout states
     gsap.set(heroWrapper, { yPercent: 0 });
     gsap.set(roadWrapper, { yPercent: 100 });
     gsap.set(sideTruck, { x: 0 });
-    gsap.set(wheelElements, { rotation: 0 });
+    gsap.set(sideWheelElements, { rotation: 0 });
     gsap.set(topTruck, { x: topEntryRight, yPercent: -50 });
+    gsap.set(topWheelElements, { rotation: 0 });
 
     // Master ScrollTrigger Timeline
     const masterTl = gsap.timeline({
@@ -82,12 +85,11 @@ export default function ScrollExperience() {
       },
     });
 
-    let currentRotation = 0;
+    let currentSideRotation = 0;
+    let currentTopRotation = 0;
 
     // Helper to add one complete loop cycle to the timeline
     const addCycle = (startTime: number) => {
-      const cycleDuration = 10.0;
-
       // 1. FRAME 1: Side truck drives right and fully exits (~40% of cycle, reduced speed)
       // Duration: 2.8s
       const exitRot = sideExitRight * 3.45;
@@ -101,15 +103,15 @@ export default function ScrollExperience() {
         startTime
       );
       masterTl.to(
-        wheelElements,
+        sideWheelElements,
         {
-          rotation: currentRotation + exitRot,
+          rotation: currentSideRotation + exitRot,
           ease: "none",
           duration: 2.8,
         },
         startTime
       );
-      currentRotation += exitRot;
+      currentSideRotation += exitRot;
 
       // 2. TRANSITION: Frame 1 slides up, Frame 2 slides in
       // Duration: 1.0s (startTime + 2.8 -> startTime + 3.8)
@@ -145,7 +147,11 @@ export default function ScrollExperience() {
       );
 
       // 4. FRAME 2: Top truck enters from right, drives all the way across, and FULLY EXITS LEFT
+      // With top-view wheels spinning forward (counter-clockwise) as the truck travels left!
       // Duration: 3.4s (startTime + 4.8 -> startTime + 8.2)
+      const topTravelDistance = topEntryRight - topExitLeft;
+      const topRot = topTravelDistance * 3.45;
+
       masterTl.to(
         topTruck,
         {
@@ -155,6 +161,16 @@ export default function ScrollExperience() {
         },
         startTime + 4.8
       );
+      masterTl.to(
+        topWheelElements,
+        {
+          rotation: currentTopRotation - topRot, // Counter-clockwise roll forward to left
+          ease: "none",
+          duration: 3.4,
+        },
+        startTime + 4.8
+      );
+      currentTopRotation -= topRot;
 
       // 5. TRANSITION BACK: Once top truck has fully exited left, Frame 2 slides down, Frame 1 slides back in
       // Duration: 1.0s (startTime + 8.2 -> startTime + 9.2)
@@ -206,15 +222,15 @@ export default function ScrollExperience() {
         startTime + 9.2
       );
       masterTl.to(
-        wheelElements,
+        sideWheelElements,
         {
-          rotation: currentRotation + returnRot,
+          rotation: currentSideRotation + returnRot,
           ease: "none",
           duration: 0.8,
         },
         startTime + 9.2
       );
-      currentRotation += returnRot;
+      currentSideRotation += returnRot;
     };
 
     // Build Cycle 1 (0 -> 10) and Cycle 2 (10 -> 20) for continuous scrolling loop
@@ -286,9 +302,9 @@ export default function ScrollExperience() {
           <Hero truckRef={sideTruckRef} wheelsRef={sideWheelsRef} />
         </div>
 
-        {/* Frame 2: Road Frame with Top-View Truck */}
+        {/* Frame 2: Road Frame with Top-View Truck and Spinning Wheels */}
         <div ref={roadWrapperRef} className={styles.roadSection}>
-          <RoadFrame truckMoverRef={topTruckRef} />
+          <RoadFrame truckMoverRef={topTruckRef} topWheelsRef={topWheelsRef} />
         </div>
       </div>
 
