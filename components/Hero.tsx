@@ -1,4 +1,5 @@
 import Image from "next/image";
+import React from "react";
 import logo from "@/public/assets/logo.svg";
 import menu from "@/public/assets/menu.svg";
 import Truck from "./Truck";
@@ -28,9 +29,14 @@ function MarqueeGroup() {
   );
 }
 
-export default function Hero() {
+interface HeroProps {
+  truckRef?: React.RefObject<HTMLDivElement | null>;
+  wheelsRef?: React.RefObject<(HTMLDivElement | null)[]>;
+}
+
+export default function Hero({ truckRef, wheelsRef }: HeroProps) {
   return (
-    <section className={styles.hero}>
+    <section className={styles.hero} id="frame-1" aria-label="Hero section">
       <header className={styles.nav}>
         <a className={styles.logo} href="#" aria-label="Home">
           <Image src={logo} alt="" priority />
@@ -48,7 +54,7 @@ export default function Hero() {
       </header>
 
       <div className={styles.marquee} aria-hidden="true">
-        <div className={styles.track}>
+        <div className={styles.track} data-marquee="true">
           {Array.from({ length: MARQUEE_COPIES }, (_, i) => (
             <MarqueeGroup key={i} />
           ))}
@@ -57,7 +63,7 @@ export default function Hero() {
 
       <div className={styles.ground} />
 
-      <Truck />
+      <Truck truckRef={truckRef} wheelsRef={wheelsRef} />
     </section>
   );
 }

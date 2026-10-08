@@ -1,5 +1,9 @@
-import Hero from "@/components/Hero";
+import ScrollExperience from "@/components/ScrollExperience";
 
 export default function Home() {
-  return <Hero />;
+  return (
+    <main>
+      <ScrollExperience />
+    </main>
+  );
 }
