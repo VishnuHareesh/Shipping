@@ -6,11 +6,23 @@
 
 import Image from "next/image";
 import { useEffect, useRef } from "react";
-import truckBodyImage from "@/public/assets/truck_body@2x.png";
+import truckBodyBlack from "@/public/assets/truck_body@2x.png";
+import truckBodyOrange from "@/public/assets/truck_body_orange.png";
+import truckBodyBlue from "@/public/assets/truck_body_blue.png";
+import truckBodyYellow from "@/public/assets/truck_body_yellow.png";
 import wheelTrailer from "@/public/assets/wheel_trailer.png";
 import wheelDrive from "@/public/assets/wheel_drive.png";
 import wheelSteer from "@/public/assets/wheel_steer.png";
 import styles from "./Truck.module.css";
+
+export type TruckColor = "black" | "orange" | "blue" | "yellow";
+
+const TRUCK_BODIES: Record<TruckColor, any> = {
+  black: truckBodyBlack,
+  orange: truckBodyOrange,
+  blue: truckBodyBlue,
+  yellow: truckBodyYellow,
+};
 
 const SPEED = 600;        // px per second while scrolling — lower = slower truck
 const EASE = 10;          // how quickly it speeds up / slows down (higher = snappier)
@@ -36,9 +48,10 @@ const sendDebug = (msg: any) => {
   }).catch(() => {});
 };
 
-export default function Truck() {
+export default function Truck({ color = "black" }: { color?: TruckColor }) {
   const truckRef = useRef<HTMLDivElement>(null);
   const wheelsRef = useRef<(HTMLDivElement | null)[]>([]);
+
 
   useEffect(() => {
     const onError = (e: ErrorEvent) => {
@@ -202,15 +215,18 @@ export default function Truck() {
           />
         </div>
       ))}
-      <Image
-        className={styles.body}
-        src={truckBodyImage}
-        width={633}
-        height={211}
-        sizes="633px"
-        alt=""
-        priority
-      />
+      {(Object.keys(TRUCK_BODIES) as TruckColor[]).map((c) => (
+        <Image
+          key={c}
+          className={`${styles.body} ${color === c ? styles.activeBody : styles.hiddenBody}`}
+          src={TRUCK_BODIES[c]}
+          width={633}
+          height={211}
+          sizes="633px"
+          alt={color === c ? `Container truck in ${c}` : ""}
+          priority
+        />
+      ))}
     </div>
   );
 }
