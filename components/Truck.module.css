@@ -1,0 +1,37 @@
+/* Truck (Figma 9:162) */
+.truck {
+  position: absolute;
+  z-index: 2;
+  left: 227.5px;
+  top: 349px;                      /* wheels touch the ground's top edge */
+  width: 633px;
+  height: 211px;
+  will-change: transform;
+  pointer-events: none;
+  user-select: none;
+  /* translateX is driven by scroll input in Truck.tsx */
+}
+
+.body {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 633px;
+  height: 211px;
+  z-index: 2;
+  pointer-events: none;
+  display: block;
+}
+
+.wheel {
+  position: absolute;
+  top: 139px;
+  width: 44px;
+  height: 44px;
+  z-index: 1;
+  transform-origin: 50% 50%;
+  will-change: transform;
+  pointer-events: none;
+  display: block;
+}
+

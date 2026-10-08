@@ -1,0 +1,26 @@
+/* All static values come from Figma node 9:154 (frame 1408 × 890). The file defines no Figma variables. */
+:root {
+  --color-bg: #fdfdfd;
+  --color-ink: #101010;
+  --color-ghost: #e7e7e7;
+  --color-accent: #ec1d23;
+  --color-nav: #1b2026;
+  /* --font-display (Anton) and --font-ui (Inter) are set by next/font in app/layout.tsx */
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+/* Fixed viewport: the page never scrolls; scroll input only drives the truck (components/Truck.tsx) */
+html, body {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  background: var(--color-bg);
+  -webkit-font-smoothing: antialiased;
+}
