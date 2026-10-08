@@ -1,10 +1,7 @@
-"use client";
-
 import Image from "next/image";
-import { useState } from "react";
 import logo from "@/public/assets/logo.svg";
 import menu from "@/public/assets/menu.svg";
-import Truck, { TruckColor } from "./Truck";
+import Truck from "./Truck";
 import styles from "./Hero.module.css";
 
 const NAV_LINKS = [
@@ -12,13 +9,6 @@ const NAV_LINKS = [
   { label: "SERVICES", href: "#services" },
   { label: "CAREERS", href: "#careers" },
   { label: "CONTACT", href: "#contact" },
-];
-
-const COLOR_OPTIONS: { id: TruckColor; label: string; hex: string; isBlack?: boolean }[] = [
-  { id: "black", label: "Black (Original)", hex: "#121212", isBlack: true },
-  { id: "orange", label: "Orange", hex: "#f25c05" },
-  { id: "blue", label: "Blue", hex: "#0d6efd" },
-  { id: "yellow", label: "Yellow", hex: "#f5b700" },
 ];
 
 // Three identical groups (Figma 12:2, 9:155, 12:8), one loop period apart
@@ -39,8 +29,6 @@ function MarqueeGroup() {
 }
 
 export default function Hero() {
-  const [truckColor, setTruckColor] = useState<TruckColor>("black");
-
   return (
     <section className={styles.hero}>
       <header className={styles.nav}>
@@ -69,34 +57,7 @@ export default function Hero() {
 
       <div className={styles.ground} />
 
-      <Truck color={truckColor} />
-
-      <div className={styles.colorPicker} role="radiogroup" aria-label="Truck Color Options">
-        <span className={styles.colorLabel}>COLOR</span>
-        <div className={styles.swatches}>
-          {COLOR_OPTIONS.map(({ id, label, hex, isBlack }) => {
-            const isActive = truckColor === id;
-            return (
-              <button
-                key={id}
-                type="button"
-                className={`${styles.ellipseOption} ${isActive ? styles.active : ""} ${isBlack ? styles.blackSwatch : ""}`}
-                onClick={() => setTruckColor(id)}
-                role="radio"
-                aria-checked={isActive}
-                aria-label={`Switch truck color to ${label}`}
-                title={label}
-              >
-                <span
-                  className={styles.ellipseFill}
-                  style={{ backgroundColor: hex }}
-                />
-              </button>
-            );
-          })}
-        </div>
-      </div>
+      <Truck />
     </section>
   );
 }
-
