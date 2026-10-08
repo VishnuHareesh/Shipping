@@ -73,17 +73,16 @@
   top: 50%;
   left: 0;
   right: 0;
-  transform: translateY(-50%);
+  height: 0;
   pointer-events: none;
-  display: flex;
-  justify-content: flex-end;
-  padding-right: clamp(16px, 2.5vw, 36px);
   z-index: 2;
 }
 
 /* Truck horizontal translation driven by GSAP ScrollTrigger */
 .truckMover {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
   width: clamp(340px, 44vw, 580px);
   will-change: transform;
 }
@@ -125,10 +124,6 @@
   }
   .word {
     font-size: clamp(15px, 4.2vw, 19px);
-  }
-  .lane {
-    padding-right: 16px;
-    justify-content: center;
   }
   .truckMover {
     width: clamp(270px, 78vw, 380px);
